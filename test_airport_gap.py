@@ -22,15 +22,7 @@ class TestSchedule:
         attributes = data.get('attributes')
 
         self.asserts_response(response)
-        self.asserts_detail(data, attributes)
 
-    def asserts_response(self, response):
-        assert_that(response.status_code).is_equal_to(200)
-        assert_that(response.json()).is_type_of(dict)
-        assert_that(response.json()).is_not_empty()
-        assert_that(response.json()).contains_key('data')
-
-    def asserts_detail(self, data, attributes):
         assert_that(data).is_instance_of(dict)
         assert_that(data).is_not_empty()
         assert_that(data).is_length(3)
@@ -46,31 +38,37 @@ class TestSchedule:
         assert_that(attributes.get('latitude')).is_equal_to(os.getenv('ONE_SCHEDULE_LATITUDE'))
         assert_that(attributes.get('icao')).is_equal_to(os.getenv('ONE_SCHEDULE_ICAO'))
 
+    def asserts_response(self, response):
+        assert_that(response.status_code).is_equal_to(200)
+        assert_that(response.json()).is_type_of(dict)
+        assert_that(response.json()).is_not_empty()
+        assert_that(response.json()).contains_key('data')
 
-def test_schedules_not_found():
-    response = requests.get(os.getenv('BASE_URL') + 's')
-    assert response.status_code == 404
+    def test_schedules_not_found(self):
+        response = requests.get(os.getenv('BASE_URL') + 's')
+        assert_that(response.status_code).is_equal_to(404)
 
-def test_schedule_detail_not_found():
-    keys_error = ['status','title','detail']
-    response = requests.get(os.getenv('BASE_URL') + '/IKD')
-    errors = response.json().get('errors')
+    def test_schedule_detail_not_found(self):
+        keys_error = ['status','title','detail']
+        values_error = ['404','Not Found','The page you requested could not be found']
+        response = requests.get(os.getenv('BASE_URL') + '/IKD')
+        errors = response.json().get('errors')
 
-    assert response.status_code == 404
-    assert 'errors' in response.json()
-    assert isinstance(response.json(), dict)
-    assert isinstance(errors, list)
+        assert_that(response.status_code).is_equal_to(404)
+        assert_that(response.json()).is_instance_of(dict)
+        assert_that(response.json()).contains('errors')
+        assert_that(errors).is_instance_of(list)
+        assert_that(errors[0]).is_not_empty()
+        assert_that(errors[0]).is_instance_of(dict)
+        assert_that(errors[0]).contains_key(*keys_error)
+        assert_that(errors[0]).contains_value(*values_error)
 
-    for key in keys_error:
-        assert key in errors[0].keys()
+class TestDistances:
+    def test_calculation_distance(self):
+        pass
 
-
-
-
-
-
-
-
+    def test_calcualation_invalid(self):
+        pass
 
 response = requests.get(os.getenv('BASE_URL') + '/GKA')
 data = response.json().get('data')
