@@ -1,7 +1,5 @@
 # created by virtualenv automatically
-Lib
-.pytest_cache
-.idea
-__pycache__
+.pytest_cache/
+__pycache__/
+Lib/
 pyvenv.cfg
-.gitignore
