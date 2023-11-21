@@ -1,6 +1,6 @@
 # created by virtualenv automatically
 pyvenv.cfg
-/Lib/
-/.pytest_cache/
-/__pycache__/
-/.idea
+Lib/
+.pytest_cache/
+__pycache__/
+.idea
